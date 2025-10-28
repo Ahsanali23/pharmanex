@@ -1,0 +1,66 @@
+<page-header class="bg-green-50" />
+
+<div class="role-actions" style="margin: 16px 0;">
+    <button mat-raised-button color="primary" (click)="openAddRoleDialog()">
+        Add Category
+    </button>
+</div>
+
+
+<mat-card>
+    <!-- <mat-card-title>Permission List</mat-card-title> -->
+    <mat-card-content>
+
+<mtx-grid
+  [data]="categories"
+  [columns]="columns"
+  [loading]="isLoading"
+  [columnResizable]="columnResizable"
+  [multiSelectable]="multiSelectable"
+  [rowSelectable]="rowSelectable"
+  [hideRowSelectionCheckbox]="hideRowSelectionCheckbox"
+  [rowHover]="rowHover"
+  [rowStriped]="rowStriped"
+  [showToolbar]="showToolbar"
+  [toolbarTitle]="'user List'"
+  [columnHideable]="columnHideable"
+  [columnSortable]="columnSortable"
+  [columnPinnable]="columnPinnable"
+  [expandable]="expandable"
+  [expansionTemplate]="expansionTpl"
+  [pageOnFront]="showPaginator"
+  [showPaginator]="showPaginator"
+  [pageSizeOptions]="[5, 10, 50, 100]"
+  [pageIndex]="0"
+  [pageSize]="5"
+  (sortChange)="changeSort($event)"
+  (selectionChange)="changeSelect($event)"
+/>
+<ng-template #expansionTpl let-row>
+  {{ row.name }}
+</ng-template>
+
+    </mat-card-content>
+</mat-card>
+<!-- Add/Edit Role Dialog -->
+<ng-template #roleDialog>
+    <h2 mat-dialog-title>{{ isEditMode ? 'Edit Category' : 'Add Category' }}</h2>
+    <mat-dialog-content>
+        <form class="role-form">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Category Name</mat-label>
+                <input matInput [(ngModel)]="roleForm.name" name="name" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Description</mat-label>
+                <textarea matInput [(ngModel)]="roleForm.description" name="description" rows="3"></textarea>
+            </mat-form-field>          
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="roleForm">
+            {{ isEditMode ? 'Update' : 'Add' }}
+        </button>
+    </mat-dialog-actions>
+</ng-template>

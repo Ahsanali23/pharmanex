@@ -1,0 +1,19 @@
+.profile-image-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 16px;
+
+  img {
+    border-radius: 50%;
+    object-fit: cover;
+    height: 120px;
+    width: 120px;
+  }
+
+  .upload-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translate(25%, 25%);
+  }
+}

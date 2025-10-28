@@ -1,0 +1,173 @@
+.sale-actions {
+  margin: 1rem 0;
+  padding: 0 1rem;
+
+  .actions-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .search-container {
+      flex: 1;
+      min-width: 300px;
+
+      .search-field {
+        width: 100%;
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+}
+
+.customer-card,
+.sale-card {
+  margin: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sale-details {
+  padding: 1rem;
+
+  .sale-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+
+    p {
+      margin: 0;
+      padding: 0.5rem;
+      background-color: #f5f5f5;
+      border-radius: 4px;
+    }
+  }
+}
+
+.sale-form,
+.customer-form,
+.sale-item-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+
+  .full-width {
+    width: 100%;
+  }
+}
+
+.sale-items-section {
+  margin-top: 1rem;
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  .total-section {
+    margin-top: 1rem;
+    text-align: right;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+
+    h3 {
+      margin: 0;
+      color: #2196f3;
+    }
+  }
+}
+
+.view-sale-details {
+  .sale-info-section {
+    margin-bottom: 2rem;
+
+    h3 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+
+      .info-item {
+        padding: 0.5rem;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+
+        .label {
+          font-weight: 500;
+          color: #666;
+          margin-right: 0.5rem;
+        }
+
+        .value {
+          color: #333;
+        }
+      }
+    }
+  }
+
+  .sale-items-section {
+    h3 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+  }
+}
+
+.add-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #2196f3;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .sale-actions {
+    .actions-container {
+      flex-direction: column;
+
+      .search-container {
+        width: 100%;
+      }
+
+      .button-group {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  .sale-details {
+    .sale-info {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .view-sale-details {
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+} 

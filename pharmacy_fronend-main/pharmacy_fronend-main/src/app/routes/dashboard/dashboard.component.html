@@ -1,0 +1,200 @@
+<!-- @if (isShowAlert) {
+  <mtx-alert type="info" dismissible (closed)="onAlertDismiss()">
+    🎉 Introducing
+    <a [href]="introducingItem.link" target="_blank">{{ introducingItem.name }}</a>
+    - {{ introducingItem.description }}
+    <a [href]="introducingItem.link" target="_blank">Learn more!</a>
+  </mtx-alert>
+} -->
+
+<div class="row">
+  <!-- Statistics -->
+  <!-- @for (stat of stats; track stat) { -->
+  <div class="col-sm-6 col-md-3" *ngFor="let stat of stats">
+    <mat-card [class]="['text-white', 'b-0', stat.color]">
+      <mat-card-header>
+        <mat-card-subtitle class="text-white">{{ stat.title }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <h2 class="m-t-0 m-b-8">{{ stat.amount }}</h2>
+        <mtx-progress
+          [value]="stat.progress.value"
+          height="2px"
+          foreground="rgba(255,255,255,1)"
+          background="rgba(0,0,0,.4)"
+        />
+        <small class="text-muted">Monthly</small>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <!-- } -->
+
+  <!-- Charts -->
+  <div class="col-md-7">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Sales & Purchase</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div id="chart1"></div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-md-5">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Product sales</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div id="chart2"></div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Others -->
+  <div class="col-md-12">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Sales by Salesmen</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <apx-chart
+          [series]="salesmenBarChartOptions.series"
+          [chart]="salesmenBarChartOptions.chart"
+          [xaxis]="salesmenBarChartOptions.xaxis"
+          [title]="salesmenBarChartOptions.title"
+        />
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-md-6">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Product stocks</mat-card-title>
+      </mat-card-header>
+    <mat-card-content>
+  <ng-container *ngIf="dataSource && dataSource.length > 0; else noStockRecords">
+    <table class="w-full" mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef>Quantity</th>
+        <td mat-cell *matCellDef="let element">{{ element.quantity }}</td>
+      </ng-container>
+      <ng-container matColumnDef="unit">
+        <th mat-header-cell *matHeaderCellDef>unit</th>
+        <td mat-cell *matCellDef="let element">{{ element.unit }}</td>
+      </ng-container>
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef>category</th>
+        <td mat-cell *matCellDef="let element">{{ element.category }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </ng-container>
+  <ng-template #noStockRecords>
+    <div class="text-center">No records found.</div>
+  </ng-template>
+</mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-md-6">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Today purchase</mat-card-title>
+      </mat-card-header>
+     <mat-card-content>
+  <ng-container *ngIf="todayPurchase && todayPurchase.length > 0; else noPurchaseRecords">
+    <table class="w-full" mat-table [dataSource]="todayPurchase">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+      </ng-container>
+      <ng-container matColumnDef="invoiceNumber">
+        <th mat-header-cell *matHeaderCellDef>Invoice No</th>
+        <td mat-cell *matCellDef="let element">{{ element.invoiceNumber }}</td>
+      </ng-container>
+      <ng-container matColumnDef="totalAmount">
+        <th mat-header-cell *matHeaderCellDef>Total Amount</th>
+        <td mat-cell *matCellDef="let element">{{ element.totalAmount }}</td>
+      </ng-container>
+      <ng-container matColumnDef="supplier">
+        <th mat-header-cell *matHeaderCellDef>Supplier</th>
+        <td mat-cell *matCellDef="let element">{{ element.supplier }}</td>
+      </ng-container>
+      <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef>User</th>
+        <td mat-cell *matCellDef="let element">{{ element.user }}</td>
+      </ng-container>
+      <ng-container matColumnDef="itemsCount">
+        <th mat-header-cell *matHeaderCellDef>Items Count</th>
+        <td mat-cell *matCellDef="let element">{{ element.itemsCount }}</td>
+      </ng-container>
+      <ng-container matColumnDef="purchaseDate">
+        <th mat-header-cell *matHeaderCellDef>Purchase Date</th>
+        <td mat-cell *matCellDef="let element">{{ element.purchaseDate }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedPuchaseColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedPuchaseColumns"></tr>
+    </table>
+  </ng-container>
+  <ng-template #noPurchaseRecords>
+    <div class="text-center">No records found.</div>
+  </ng-template>
+</mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-md-6">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Today sale</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <ng-container *ngIf="todaySales && todaySales.length > 0; else noRecords">
+          <table class="w-full" mat-table [dataSource]="todaySales">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+            </ng-container>
+            <ng-container matColumnDef="invoiceNumber">
+              <th mat-header-cell *matHeaderCellDef>Invoice No</th>
+              <td mat-cell *matCellDef="let element">{{ element.invoiceNumber }}</td>
+            </ng-container>
+            <ng-container matColumnDef="totalAmount">
+              <th mat-header-cell *matHeaderCellDef>Total Amount</th>
+              <td mat-cell *matCellDef="let element">{{ element.totalAmount }}</td>
+            </ng-container>
+            <ng-container matColumnDef="customer">
+              <th mat-header-cell *matHeaderCellDef>Customer</th>
+              <td mat-cell *matCellDef="let element">{{ element.customer }}</td>
+            </ng-container>
+            <ng-container matColumnDef="user">
+              <th mat-header-cell *matHeaderCellDef>User</th>
+              <td mat-cell *matCellDef="let element">{{ element.user }}</td>
+            </ng-container>
+            <ng-container matColumnDef="itemsCount">
+              <th mat-header-cell *matHeaderCellDef>Items Count</th>
+              <td mat-cell *matCellDef="let element">{{ element.itemsCount }}</td>
+            </ng-container>
+            <ng-container matColumnDef="salesDate">
+              <th mat-header-cell *matHeaderCellDef>Sale Date</th>
+              <td mat-cell *matCellDef="let element">{{ element.salesDate }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedSalesColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedSalesColumns"></tr>
+          </table>
+        </ng-container>
+        <ng-template #noRecords>
+          <div class="text-center">No records found.</div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

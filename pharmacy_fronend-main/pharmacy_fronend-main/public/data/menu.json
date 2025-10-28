@@ -1,0 +1,216 @@
+{
+  "menu": [
+    {
+      "route": "dashboard",
+      "name": "Dashboard",
+      "type": "link",
+      "icon": "dashboard"
+    },
+    {
+      "route": "purchase",
+      "name": "Purchase",
+      "type": "sub",
+      "icon": "add_shopping_cart",
+      "children": [
+        {
+          "route": "purchaseMagement",
+          "name": "Purchase Management",
+          "type": "link",
+          "permissions": {
+            "only": [
+           "product:Get","Product.Add","Product.Edit","Product.Delete"
+            ]
+          }
+        }
+      ],
+      "permissions": {
+            "only": [
+              "product:Get","Product.Add","Product.Edit","Product.Delete"
+            ]
+          }
+    },
+    {
+      "route": "sales",
+      "name": "Sale",
+      "type": "sub",
+      "icon": "shopping_cart",
+      "children": [
+        {
+          "route": "salemanagement",
+          "name": "Sale Management",
+          "type": "link",
+          "permissions": {
+            "only": [
+              "product:Get","Product.Add","Product.Edit","Product.Delete"
+            ]
+          }
+        }
+      ],
+      "permissions": {
+            "only": [
+              "Sale:Get","Sale.Add","Sale.Edit","Sale.Delete"
+            ]
+          }
+    },
+    {
+      "route": "quotation",
+      "name": "Quotation",
+      "type": "sub",
+      "icon": "chat",
+      "children": [
+        {
+          "route": "quotationmagement",
+          "name": "Quotation Magement",
+          "type": "link",
+         "permissions": {
+            "only": [
+              "Sale:Get","Sale.Add","Sale.Edit","Sale.Delete"
+            ]
+          }
+        }
+      ],
+      "permissions": {
+            "only": [
+              "Quotation:Get","Quotation.Add","Quotation.Edit","Quotation.Delete"
+            ]
+          }
+    },
+    {
+      "route": "inventory",
+      "name": "Inventory",
+      "type": "sub",
+      "icon": "inventory_2",
+      "children": [
+        {
+          "route": "products",
+          "name": "Product",
+          "type": "link",
+          "permissions": {
+            "only": [
+               "Product:Get","Product.Add","Product.Edit","Product.Delete"
+            ]
+          }
+        },
+        {
+          "route": "category",
+          "name": "Category",
+          "type": "link",
+          "permissions": {
+            "only": [
+              "Category:Get","Category.Add","Category.Edit","Category.Delete"
+            ]
+          }
+        }
+      ],
+        "permissions": {
+            "only": [
+              "Product:Get","Product.Add","Product.Edit","Product.Delete",
+                "Category:Get","Category.Add","Category.Edit","Category.Delete"
+            ]
+          }
+    },
+    {
+      "route": "permissions",
+      "name": "Permission-magement",
+      "type": "sub",
+      "icon": "lock",
+      "children": [
+        {
+          "route": "role",
+          "name": "Role",
+          "type": "link",
+          "permissions": {
+            "only": [
+             "Role:Get","Role.Add","Role.Edit","Role.Delete"
+            ]
+          }
+        },
+        {
+          "route": "permissionList",
+          "name": "Permission",
+          "type": "link",
+          "permissions": {
+            "only": [
+             "Role:Get","Role.Add","Role.Edit","Role.Delete"
+            ]
+          }
+        }
+      ],
+      "permissions": {
+            "only": [
+             "Role:Get","Role.Add","Role.Edit","Role.Delete"
+            ]
+          }
+    },{
+      "route": "usersmagement",
+          "name": "User Magement",
+            "type": "sub",
+            "icon": "person",
+             "children": [
+        {
+          "route": "user",
+          "name": "User List",
+          "type": "link",
+          "permissions": {
+            "only": [
+              "User:Get","User.Add","User.Edit","User.Delete"
+            ]
+          }
+        }],
+          "permissions": {
+            "only": [
+              "User:Get","User.Add","User.Edit","User.Delete"
+            ]
+          }
+    },
+    {
+      "route": "report",
+          "name": "Report magement",
+            "type": "sub",
+            "icon": "assessment",
+            "children": [
+        {
+          "route": "SalesAndPurchase",
+          "name": "Sales & Purchase",
+          "type": "link",
+          "permissions": {
+            "only": [
+              "Report.View"
+            ]
+          }
+        },
+       {
+          "route": "UserSale",
+          "name": "User Sale",
+          "type": "link",
+          "permissions": {
+            "only": [
+              "Report.View"
+            ]
+          }
+        }
+      ],
+        
+          "permissions": {
+            "only": [
+              "Report.View"
+            ]
+          }
+    }
+    ,
+    {
+      "route": "profile",
+      "name": "Profile",
+      "type": "sub",
+      "icon": "person",
+      "children": [
+      
+        {
+          "route": "settings",
+          "name": "Settings",
+          "type": "link"
+        }
+      ]
+    }
+  ]
+}

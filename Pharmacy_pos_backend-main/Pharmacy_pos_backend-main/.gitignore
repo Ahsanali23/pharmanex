@@ -1,0 +1,9 @@
+/.vs
+/Pharmacy_pos/bin
+/Pharmacy_pos/obj
+Pharmacy_pos/appsettings.json
+*.jpg
+*.jpeg
+*.txt
+Pharmacy_pos/appsettings.json
+*.png

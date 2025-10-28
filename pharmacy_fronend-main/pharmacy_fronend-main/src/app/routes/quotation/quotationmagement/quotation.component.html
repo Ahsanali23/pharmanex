@@ -1,0 +1,431 @@
+<page-header class="bg-green-50" />
+
+<div class="sale-actions">
+  <div class="actions-container">
+    <div class="search-container">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search Quotation</mat-label>
+        <input
+          matInput
+          [(ngModel)]="searchText"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Search by ID, customer, user, invoice, amount, or date"
+        />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="button-group">
+      <button mat-raised-button color="primary" (click)="openAddCustomerDialog()">
+        <mat-icon>person_add</mat-icon>
+        Add Customer
+      </button>
+      <button mat-raised-button color="primary" (click)="openAddSaleDialog()">
+        <mat-icon>add</mat-icon>
+        Add Quotation
+      </button>
+    </div>
+  </div>
+</div>
+
+<mat-card class="customer-card">
+  <mat-card-header>
+    <mat-card-title>Customers</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mtx-grid
+      [data]="customers"
+      [columns]="customerColumns"
+      [loading]="customerLoading"
+      [showToolbar]="true"
+      [pageSize]="5"
+      [pageSizeOptions]="[5, 10, 25, 50]"
+    />
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="sale-card">
+  <mat-card-header>
+    <mat-card-title>Quotation</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mtx-grid
+      [data]="filteredSales"
+      [columns]="columns"
+      [loading]="isLoading"
+      [columnResizable]="columnResizable"
+      [multiSelectable]="multiSelectable"
+      [rowSelectable]="rowSelectable"
+      [hideRowSelectionCheckbox]="hideRowSelectionCheckbox"
+      [rowHover]="rowHover"
+      [rowStriped]="rowStriped"
+      [showToolbar]="showToolbar"
+      [toolbarTitle]="'Quotation List'"
+      [columnHideable]="columnHideable"
+      [columnSortable]="columnSortable"
+      [columnPinnable]="columnPinnable"
+      [expandable]="expandable"
+      [expansionTemplate]="expansionTpl"
+      [pageOnFront]="showPaginator"
+      [showPaginator]="showPaginator"
+      [pageSizeOptions]="[5, 10, 50, 100]"
+      [pageIndex]="0"
+      [pageSize]="5"
+      (sortChange)="changeSort($event)"
+      (selectionChange)="changeSelect($event)"
+    />
+    <ng-template #expansionTpl let-row>
+      <div class="sale-details">
+        <div class="sale-info">
+          <p>
+            <strong>Customer:</strong>
+            {{ getCustomerName(row.customerId) }}
+          </p>
+          <p>
+            <strong>User:</strong>
+            {{ getUserName(row.userId) }}
+          </p>
+          <p>
+            <strong>Total Amount:</strong>
+            ${{ row.totalAmount.toFixed(2) }}
+          </p>
+          <p>
+            <strong>Invoice No:</strong>
+            {{ row.invoiceNo }}
+          </p>
+          <p>
+            <strong>Purchase Date:</strong>
+            {{ row.purchaseDate | date }}
+          </p>
+        </div>
+      </div>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
+
+<!-- Sale Items Dialog -->
+<ng-template #saleItemDialog>
+  <h2 mat-dialog-title>{{ isItemSaleEditMode ? 'Edit' : 'Add' }} Quotation Item</h2>
+  <mat-dialog-content>
+    <div class="sale-item-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Product</mat-label>
+        <mtx-select
+          [items]="products"
+          bindLabel="name"
+          bindValue="id"
+          autofocus
+          required
+          [(ngModel)]="saleItemForm.productId"
+          (ngModelChange)="onProductChange(saleItemForm)"
+          (change)="onProductChange(saleItemForm)"
+          (selectionChange)="onProductChange(saleItemForm)"
+        >
+          <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+            <mat-card
+              class="supplier-detail-card"
+              style="max-width: 260px; min-width: 180px; padding: 8px; margin: 0; box-shadow: none"
+            >
+              <mat-card-header style="padding: 0px 0">
+                <mat-card-title style="font-size: 0.85rem; font-weight: 500">
+                  {{ item.name }}
+                </mat-card-title>
+                <mat-card-subtitle style="font-size: 0.85rem">
+                  {{ item.category }}
+                </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content style="padding: 0px 0 0 0">
+                <div style="font-size: 0.85rem">
+                  <strong>purchase price:</strong>
+                  {{ item.salePrice }}
+                </div>
+                <div style="font-size: 0.85rem">
+                  <strong>Current Quantity:</strong>
+                  {{ item.quantity }}
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </ng-template>
+        </mtx-select>
+        <!-- <mat-select [(ngModel)]="saleItemForm.productId" (selectionChange)="onProductChange(saleItemForm)">
+          <mat-option *ngFor="let product of products" [value]="product.id">
+            {{ product.name }} - ${{ product.salePrice.toFixed(2) }}
+          </mat-option>
+        </mat-select> -->
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Quantity</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="saleItemForm.quantity"
+          (ngModelChange)="onQuantityChange(saleItemForm)"
+          min="1"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Price</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="saleItemForm.price"
+          (ngModelChange)="onQuantityChange(saleItemForm)"
+          min="0"
+          step="0.01"
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Total</mat-label>
+        <input matInput type="number" [(ngModel)]="saleItemForm.total" readonly />
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="validateAndSaveSaleItem()"
+      [disabled]="!isSaleItemFormValid()"
+    >
+      Save
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!-- Sale Dialog -->
+<ng-template #saleDialog>
+  <h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Add' }} Sale</h2>
+  <mat-dialog-content>
+    <div class="sale-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Invoice No</mat-label>
+        <input matInput [(ngModel)]="saleForm.invoiceNo" disabled />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Customer</mat-label>
+        <mtx-select
+          [items]="customers"
+          bindLabel="name"
+          bindValue="id"
+          autofocus
+          required
+          [(ngModel)]="saleForm.customerId"
+        >
+          <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+            <mat-card
+              class="supplier-detail-card"
+              style="max-width: 260px; min-width: 180px; padding: 8px; margin: 0; box-shadow: none"
+            >
+              <mat-card-header style="padding: 0px 0">
+                <mat-card-title style="font-size: 0.85rem; font-weight: 500">
+                  {{ item.name }}
+                </mat-card-title>
+                <mat-card-subtitle style="font-size: 0.85rem">{{ item.email }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content style="padding: 0px 0 0 0">
+                <div style="font-size: 0.85rem">
+                  <strong>Phone:</strong>
+                  {{ item.phone }}
+                </div>
+                <div style="font-size: 0.85rem">
+                  <strong>Address:</strong>
+                  {{ item.address }}
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </ng-template>
+        </mtx-select>
+
+        <mat-error>Please choose a Suppiler</mat-error>
+        <!-- <mat-select [(ngModel)]="saleForm.customerId">
+          <mat-option *ngFor="let customer of customers" [value]="customer.id">
+            {{ customer.name }}
+          </mat-option>
+          <mat-divider />
+          <mat-option (click)="openQuickAddCustomerDialog()" class="add-option">
+            <mat-icon>add</mat-icon>
+            Add New Customer
+          </mat-option>
+        </mat-select> -->
+      </mat-form-field>
+
+    
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Quotations Date</mat-label>
+        <mtx-datetimepicker
+          #Salesdatepicker
+          [type]="type"
+          [mode]="mode"
+          [multiYearSelector]="multiYearSelector"
+          [calendarHeaderComponent]="customHeader"
+          [startView]="startView"
+          [touchUi]="touchUi"
+          [timeInput]="timeInput"
+          [timeInputAutoFocus]="timeInputAutoFocus"
+          [showWeekNumbers]="showWeekNumbers"
+        />
+        <input
+          [mtxDatetimepicker]="Salesdatepicker"
+          [(ngModel)]="saleForm.purchaseDate"
+          matInput
+          required
+          [value]="
+            saleForm.purchaseDate ? (saleForm.purchaseDate | date: 'yyyy-MM-ddTHH:mm') : null
+          "
+        />
+        <mtx-datetimepicker-toggle [for]="Salesdatepicker" matSuffix />
+        <!-- <input matInput [matDatepicker]="picker" [(ngModel)]="saleForm.purchaseDate">
+        <mat-datepicker-toggle matSuffix [for]="picker" />
+        <mat-datepicker #picker /> -->
+      </mat-form-field>
+
+      <div class="sale-items-section">
+        <div class="section-header">
+          <h3>Quotation Items</h3>
+          <button mat-raised-button color="primary" (click)="openAddItemDialog()">
+            <mat-icon>add</mat-icon>
+            Add Item
+          </button>
+        </div>
+
+        <mtx-grid
+          [data]="saleForm.items"
+          [columns]="itemColumns"
+          [loading]="false"
+          [showToolbar]="false"
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+        />
+
+        <div class="total-section">
+          <h3>Total Amount: ${{ saleForm.totalAmount.toFixed(2) }}</h3>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="primary" (click)="onDialogSave()">Save</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!-- Quick Add Customer Dialog -->
+<ng-template #quickAddCustomerDialog>
+  <h2 mat-dialog-title>Add New Customer</h2>
+  <mat-dialog-content>
+    <div class="customer-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput [(ngModel)]="customerForm.name" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Phone</mat-label>
+        <input matInput [(ngModel)]="customerForm.phone" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="customerForm.email" type="email" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Address</mat-label>
+        <textarea matInput [(ngModel)]="customerForm.address" required rows="3"></textarea>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="primary" (click)="saveQuickCustomer()">Save & Select</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!-- View Sale Dialog -->
+<ng-template #viewSaleDialog>
+  <h2 mat-dialog-title>Quotation Details</h2>
+  <mat-dialog-content>
+    <div class="view-sale-details">
+      <div class="sale-info-section">
+        <h3>Quotation Information</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">ID:</span>
+            <span class="value">{{ dialogData.sale.id }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Customer:</span>
+            <span class="value">{{ getCustomerName(dialogData.sale.customerId) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">User:</span>
+            <span class="value">{{ getUserName(dialogData.sale.userId) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Invoice No:</span>
+            <span class="value">{{ dialogData.sale.invoiceNo }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Purchase Date:</span>
+            <span class="value">{{ dialogData.sale.purchaseDate | date }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Total Amount:</span>
+            <span class="value">${{ dialogData.sale.totalAmount.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sale-items-section">
+        <h3>Quotation Items</h3>
+        <mtx-grid
+          [data]="dialogData.sale.items || []"
+          [columns]="itemColumns"
+          [loading]="false"
+          [showToolbar]="false"
+          [pageSize]="5"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+        />
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<!-- Customer Dialog -->
+<ng-template #customerDialog>
+  <h2 mat-dialog-title>{{ isCustomerEditMode ? 'Edit' : 'Add' }} Customer</h2>
+  <mat-dialog-content>
+    <div class="customer-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput [(ngModel)]="customerForm.name" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Phone</mat-label>
+        <input matInput [(ngModel)]="customerForm.phone" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput [(ngModel)]="customerForm.email" type="email" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Address</mat-label>
+        <textarea matInput [(ngModel)]="customerForm.address" required rows="3"></textarea>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="customerForm">Save</button>
+  </mat-dialog-actions>
+</ng-template>

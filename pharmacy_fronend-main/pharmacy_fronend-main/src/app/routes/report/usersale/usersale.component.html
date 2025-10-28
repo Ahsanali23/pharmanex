@@ -1,0 +1,96 @@
+<page-header class="bg-green-50" />
+
+<div class="sale-actions">
+  <div class="actions-container">
+    <div class="date-filter-container">
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>From Date</mat-label>
+        <mtx-datetimepicker
+          #fromdatepicker
+          [type]="type"
+          [mode]="mode"
+          [multiYearSelector]="multiYearSelector"
+          [calendarHeaderComponent]="customHeader"
+          [startView]="startView"
+          [touchUi]="touchUi"
+          [timeInput]="timeInput"
+          [timeInputAutoFocus]="timeInputAutoFocus"
+          [showWeekNumbers]="showWeekNumbers"
+        />
+        <input [mtxDatetimepicker]="fromdatepicker" [(ngModel)]="fromDate" matInput required />
+        <mtx-datetimepicker-toggle [for]="fromdatepicker" matSuffix />
+        <!-- <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" placeholder="From date">
+                <mat-datepicker-toggle matSuffix [for]="fromPicker" />
+                <mat-datepicker #fromPicker /> -->
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="date-field">
+        <mat-label>To Date</mat-label>
+        <mtx-datetimepicker
+          #todatepicker
+          [type]="type"
+          [mode]="mode"
+          [multiYearSelector]="multiYearSelector"
+          [calendarHeaderComponent]="customHeader"
+          [startView]="startView"
+          [touchUi]="touchUi"
+          [timeInput]="timeInput"
+          [timeInputAutoFocus]="timeInputAutoFocus"
+          [showWeekNumbers]="showWeekNumbers"
+        />
+        <input [mtxDatetimepicker]="todatepicker" [(ngModel)]="toDate" matInput required />
+        <mtx-datetimepicker-toggle [for]="todatepicker" matSuffix />
+        <!-- <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" placeholder="To date" />
+        <mat-datepicker-toggle matSuffix [for]="toPicker" />
+        <mat-datepicker #toPicker /> -->
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="onDateSearch()">
+        <mat-icon>search</mat-icon>
+        Search
+      </button>
+    </div>
+  </div>
+</div>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Sales & Purchase Report</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mtx-grid
+      id="report-table"
+      [columns]="tableColumns"
+      [loading]="isLoading"
+      [data]="tableData"
+      [rowHover]="false"
+      [rowStriped]="false"
+      [showToolbar]="false"
+      [columnResizable]="false"
+      [columnSortable]="false"
+      [columnPinnable]="false"
+      [columnSortable]="false"
+      [showPaginator]="false"
+      [hidePageSize]="true"
+      [pageOnFront]="false"
+      class="mat-elevation-z1"
+    />
+  </mat-card-content>
+  <table id="print-table" style="display: none">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Invoice No</th>
+        <th>Total Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of tableData">
+        <td>{{ row.date | date: 'shortDate' }}</td>
+        <td>{{ row.type }}</td>
+        <td>{{ row.invId }}</td>
+        <td>{{ row.totalAmount }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <!-- Add this above your table/grid -->
+  <button mat-raised-button color="primary" (click)="printTable()">Print Report</button>
+</mat-card>

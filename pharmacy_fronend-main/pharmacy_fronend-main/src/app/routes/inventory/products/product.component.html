@@ -1,0 +1,170 @@
+<page-header class="bg-green-50" />
+
+<div class="product-actions" style="margin: 16px 0;">
+    <button mat-raised-button color="primary" (click)="openAddProductDialog()">
+        Add Product
+    </button>
+</div>
+
+<mat-card>
+    <mat-card-content>
+        <mtx-grid
+            [data]="products"
+            [columns]="columns"
+            [loading]="isLoading"
+            [columnResizable]="columnResizable"
+            [multiSelectable]="multiSelectable"
+            [rowSelectable]="rowSelectable"
+            [hideRowSelectionCheckbox]="hideRowSelectionCheckbox"
+            [rowHover]="rowHover"
+            [rowStriped]="rowStriped"
+            [showToolbar]="showToolbar"
+            [toolbarTitle]="'Product List'"
+            [columnHideable]="columnHideable"
+            [columnSortable]="columnSortable"
+            [columnPinnable]="columnPinnable"
+            [expandable]="expandable"
+            [expansionTemplate]="expansionTpl"
+            [pageOnFront]="showPaginator"
+            [showPaginator]="showPaginator"
+            [pageSizeOptions]="[5, 10, 50, 100]"
+            [pageIndex]="0"
+            [pageSize]="5"
+            (sortChange)="changeSort($event)"
+            (selectionChange)="changeSelect($event)"
+        />
+        <ng-template #expansionTpl let-row>
+            <div class="product-details">
+                <img [src]="row.imageUrl" alt="Product Image" class="product-image" *ngIf="row.imageUrl">
+                <div class="product-info">
+                    <p><strong>Barcode:</strong> {{ row.barcode }}</p>
+                    <p><strong>Brand:</strong> {{ row.brand }}</p>
+                    <p><strong>Cost Price:</strong> ${{ row.costPrice.toFixed(2) }}</p>
+                    <p><strong>Sale Price:</strong> ${{ row.salePrice.toFixed(2) }}</p>
+                    <p><strong>Alert Quantity:</strong> {{ row.alertQuantity }}</p>
+                </div>
+            </div>
+        </ng-template>
+    </mat-card-content>
+</mat-card>
+
+<!-- Add/Edit Product Dialog -->
+<ng-template #productDialog>
+    <h2 mat-dialog-title>{{ isEditMode ? 'Edit Product' : 'Add Product' }}</h2>
+    <mat-dialog-content>
+        <form class="product-form">
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input matInput [(ngModel)]="productForm.name" name="name" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Category</mat-label>
+                    <mat-select [(ngModel)]="productForm.categoryId" name="categoryId" required>
+                        @for (category of categories; track category.id) {
+                            <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Barcode</mat-label>
+                    <input matInput [(ngModel)]="productForm.barcode" name="barcode" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Brand</mat-label>
+                    <input matInput [(ngModel)]="productForm.brand" name="brand" required>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Cost Price</mat-label>
+                    <input matInput type="number" [(ngModel)]="productForm.costPrice" name="costPrice" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Sale Price</mat-label>
+                    <input matInput type="number" [(ngModel)]="productForm.salePrice" name="salePrice" required>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Quantity</mat-label>
+                    <input matInput type="number" [(ngModel)]="productForm.quantity" name="quantity"  disabled>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Unit</mat-label>
+                    <mat-select [(ngModel)]="productForm.unit" name="unit" required>
+                        @for (unit of units; track unit.value) {
+                            <mat-option [value]="unit.value">{{ unit.label }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>Expiry Date</mat-label>
+                    <mtx-datetimepicker
+                        #expierdatepicker
+                        [type]="type"
+                        [mode]="mode"
+                        [multiYearSelector]="multiYearSelector"
+                        [calendarHeaderComponent]="customHeader"
+                        [startView]="startView"
+                        [touchUi]="touchUi"
+                        [timeInput]="timeInput"
+                        [timeInputAutoFocus]="timeInputAutoFocus"
+                        [showWeekNumbers]="showWeekNumbers"
+                    />
+                    <input
+                        [mtxDatetimepicker]="expierdatepicker"
+                        [(ngModel)]="productForm.expiryDate"
+                        matInput
+                        [ngModelOptions]="{standalone: true}"
+                        [value]="productForm.expiryDate ? (productForm.expiryDate | date:'yyyy-MM-ddTHH:mm') : null"
+                        required
+                    />
+                    <mtx-datetimepicker-toggle [for]="expierdatepicker" matSuffix />
+                    <!-- <input matInput [matDatepicker]="picker" [(ngModel)]="productForm.expiryDate" name="expiryDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker" />
+                    <mat-datepicker #picker /> -->
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Alert Quantity</mat-label>
+                    <input matInput type="number" [(ngModel)]="productForm.alertQuantity" name="alertQuantity" required>
+                </mat-form-field>
+            </div>
+
+            <div class="image-upload-section">
+                <div class="image-preview" *ngIf="previewUrl">
+                    <img [src]="previewUrl" alt="Preview" class="preview-image">
+                    <button mat-icon-button color="warn" class="remove-image" (click)="previewUrl = null; selectedFile = null; productForm.image = null">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+                <div class="upload-button-wrapper">
+                    <button mat-raised-button type="button" (click)="fileInput.click()">
+                        <mat-icon>upload</mat-icon>
+                        Upload Image
+                    </button>
+                    <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none">
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="productForm">
+            {{ isEditMode ? 'Update' : 'Add' }}
+        </button>
+    </mat-dialog-actions>
+</ng-template>
